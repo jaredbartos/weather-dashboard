@@ -87,11 +87,31 @@ $(document).ready(function(){
         console.log(tempArray);
         console.log(windArray);
         console.log(humidityArray);
-        $("#day1Date").text(dateArray[0]);
-        $("#day2Date").text(dateArray[1]);
-        $("#day3Date").text(dateArray[2]);
-        $("#day4Date").text(dateArray[3]);
-        $("#day5Date").text(dateArray[4]);
+
+        var dateClass = document.querySelectorAll(".date");
+        for(var i = 0; i < dateArray.length; i++) {
+          dateClass[i].textContent = dateArray[i];
+        };
+
+        var iconClass = document.querySelectorAll(".icon");
+        for(var i = 0; i < iconArray.length; i++) {
+          iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
+        };
+
+        var tempClass = document.querySelectorAll(".temp");
+        for(var i = 0; i < tempArray.length; i++) {
+          tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
+        };
+
+        var humidityClass = document.querySelectorAll(".humidity");
+        for(var i = 0; i < humidityArray.length; i++) {
+          humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
+        };
+
+        var windClass = document.querySelectorAll(".wind");
+        for(var i = 0; i < windArray.length; i++) {
+          windClass[i].innerHTML = "Wind Speed: " + windArray[i] + " mph";
+        };
       })
     })
   }
