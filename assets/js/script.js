@@ -30,21 +30,70 @@ $(document).ready(function(){
           return {lat, lon};
       })
     
-    var retrieveWeather = function() {
-      fetchCoordinates.then(function(coordinates) {
-        var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
+    fetchCoordinates.then(function(coordinates) {
+      var currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
 
-        var fetchWeather = fetch(weatherURL)
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(data) {
-            console.log(data);
-          })
+      var fetchCurrentWeather = fetch(currentWeatherURL)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          console.log(data);
+          var cityName = data.name;
+          var weatherIcon = data.weather[0].icon;
+          var temp = data.main.temp;
+          var humidity = data.main.humidity;
+          var wind = data.wind.speed;
+          return {cityName, weatherIcon, temp, humidity, wind};
+        })
+      
+      fetchCurrentWeather.then(function(currentStats) {
+        $("#intro").attr("style", "display: none;")
+        $("#weatherData").attr("style", "display: block;")
+        $("#cityName").html(currentStats.cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + currentStats.weatherIcon + ".png alt='Weather Icon' />");
+        $("#currentTemp").html("Temp: " + currentStats.temp + " &deg;F");
+        $("#currentHumidity").text("Humidity: " + currentStats.humidity + " %");
+        $("#currentWind").text("Wind Speed: " + currentStats.wind + " mph");
       })
-    }
+    })
 
-    retrieveWeather();
+    fetchCoordinates.then(function(coordinates) {
+      var forecastWeatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
+
+      var fetchForecastWeather = fetch(forecastWeatherURL)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        console.log(data);
+        var dateArray = [];
+        var iconArray = [];
+        var tempArray = [];
+        var windArray = [];
+        var humidityArray = [];
+        console.log(dayjs(dayjs.unix(data.list[0].dt)).hour())
+        console.log(data.list.length);
+        for (var i = 0; i < data.list.length; i++) {
+          if (dayjs(dayjs.unix(data.list[i].dt)).hour() === 12 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 13 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 14) {
+            dateArray.push(dayjs(dayjs.unix(data.list[i].dt)).format("MM/DD/YYYY"));
+            iconArray.push(data.list[i].weather[0].icon);
+            tempArray.push(data.list[i].main.temp);
+            windArray.push(data.list[i].wind.speed);
+            humidityArray.push(data.list[i].main.humidity);
+          }
+        }
+        console.log(dateArray);
+        console.log(iconArray);
+        console.log(tempArray);
+        console.log(windArray);
+        console.log(humidityArray);
+        $("#day1Date").text(dateArray[0]);
+        $("#day2Date").text(dateArray[1]);
+        $("#day3Date").text(dateArray[2]);
+        $("#day4Date").text(dateArray[3]);
+        $("#day5Date").text(dateArray[4]);
+      })
+    })
   }
 
   $("#searchBtn").on("click", function(event) {
