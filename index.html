@@ -20,7 +20,7 @@
 
   <div class="container-fluid row mt-3">
     <aside class="col-lg-3 ms-3 min-vh-100 border-end pe-2">
-      <h1>Search for Any US City:</h1>
+      <h1>Search for a US City:</h1>
       <p>Enter zip code or a city followed by state abbreviation</p>
       <form class="d-flex mb-5">
         <input class="form-control me-2" type="search" id="city" placeholder="e.g., Minneapolis, MN OR 55406" aria-label="Search">
@@ -101,6 +101,15 @@
         </div>
       </section>
     </div>
+
+    <section class="col-lg-8 min-vh-100" id="errorMessage" style="display: none;">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title" id="errorStatus"></h5>
+          <p class="card-text">Your search is either in the wrong format, or the location name, as entered, is not currently in the database. We apologize for any inconvenience.</p>
+        </div>
+      </div>
+    </section>
   </div>
 
   

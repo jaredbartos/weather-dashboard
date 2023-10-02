@@ -36,6 +36,10 @@ $(document).ready(function(){
       .then(function (response){
         if (response.status === 200) {
           return response.json();
+        } else {
+          $("#errorStatus").html("<pre>Error: " + response.status + " - " + response.statusText + "!");
+          $("#intro").attr("style", "display: none;");
+          $("#errorMessage").attr("style", "display: block;");
         }        
       })
       .then(function (data) {
@@ -64,8 +68,8 @@ $(document).ready(function(){
           var temp = data.main.temp;
           var humidity = data.main.humidity;
           var wind = data.wind.speed;
-          $("#intro").attr("style", "display: none;")
-          $("#weatherData").attr("style", "display: block;")
+          $("#intro").attr("style", "display: none;");
+          $("#weatherData").attr("style", "display: block;");
           $("#cityName").html(cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + weatherIcon + ".png alt='Weather Icon' />");
           $("#currentTemp").html("Temp: " + temp + " &deg;F");
           $("#currentHumidity").text("Humidity: " + humidity + " %");
