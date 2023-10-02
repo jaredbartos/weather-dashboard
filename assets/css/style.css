@@ -12,3 +12,9 @@ h1{
 h2 {
   font-size: 125%;
 }
+
+@media (hover: hover) {
+  #searchHistory li:hover {
+    cursor: pointer;
+  }
+}

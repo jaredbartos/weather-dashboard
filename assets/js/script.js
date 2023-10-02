@@ -1,10 +1,28 @@
 // Wrap jQuery code in Document Ready event to prevent code being executed before document is finished loading
 $(document).ready(function(){
   var APIKey = "dda9f109c012cbe0169e71d8a23518f5";
+  var searchHistoryEl = $("#searchHistory");
+  var stored = localStorage.getItem("weatherHistory");
+  var historyArray = JSON.parse(stored);
 
-  var getWeatherAPI = function() {
+  var setLocationHistory = function() {
+    if (searchHistoryEl.children() !== null) {
+      searchHistoryEl.children().remove();
+    }
+    if (historyArray !== null) {
+      for (var i = 0; i < historyArray.length; i++) {
+        var searchHistoryItem = $("<li class='list-group-item border-0 mt-3'>");
+        searchHistoryItem.text(historyArray[i]);
+        searchHistoryEl.append(searchHistoryItem);
+      }
+    }
+  }
+  
+  setLocationHistory();
+  
+  var displayWeather = function() {
     var cityInput = $("#city").val();
-    
+
     if (cityInput.includes(",")) {
       var cityArray = cityInput.split(", ");
       var city = cityArray[0];
@@ -16,7 +34,9 @@ $(document).ready(function(){
     }
     var fetchCoordinates = fetch(geoURL)
       .then(function (response){
-        return response.json();
+        if (response.status === 200) {
+          return response.json();
+        }        
       })
       .then(function (data) {
         console.log(data);
@@ -44,17 +64,13 @@ $(document).ready(function(){
           var temp = data.main.temp;
           var humidity = data.main.humidity;
           var wind = data.wind.speed;
-          return {cityName, weatherIcon, temp, humidity, wind};
+          $("#intro").attr("style", "display: none;")
+          $("#weatherData").attr("style", "display: block;")
+          $("#cityName").html(cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + weatherIcon + ".png alt='Weather Icon' />");
+          $("#currentTemp").html("Temp: " + temp + " &deg;F");
+          $("#currentHumidity").text("Humidity: " + humidity + " %");
+          $("#currentWind").text("Wind Speed: " + wind + " mph");
         })
-      
-      fetchCurrentWeather.then(function(currentStats) {
-        $("#intro").attr("style", "display: none;")
-        $("#weatherData").attr("style", "display: block;")
-        $("#cityName").html(currentStats.cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + currentStats.weatherIcon + ".png alt='Weather Icon' />");
-        $("#currentTemp").html("Temp: " + currentStats.temp + " &deg;F");
-        $("#currentHumidity").text("Humidity: " + currentStats.humidity + " %");
-        $("#currentWind").text("Wind Speed: " + currentStats.wind + " mph");
-      })
     })
 
     fetchCoordinates.then(function(coordinates) {
@@ -89,35 +105,57 @@ $(document).ready(function(){
         console.log(humidityArray);
 
         var dateClass = document.querySelectorAll(".date");
-        for(var i = 0; i < dateArray.length; i++) {
+        for (var i = 0; i < dateArray.length; i++) {
           dateClass[i].textContent = dateArray[i];
         };
 
         var iconClass = document.querySelectorAll(".icon");
-        for(var i = 0; i < iconArray.length; i++) {
+        for (var i = 0; i < iconArray.length; i++) {
           iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
         };
 
         var tempClass = document.querySelectorAll(".temp");
-        for(var i = 0; i < tempArray.length; i++) {
+        for (var i = 0; i < tempArray.length; i++) {
           tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
         };
 
         var humidityClass = document.querySelectorAll(".humidity");
-        for(var i = 0; i < humidityArray.length; i++) {
+        for (var i = 0; i < humidityArray.length; i++) {
           humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
         };
 
         var windClass = document.querySelectorAll(".wind");
-        for(var i = 0; i < windArray.length; i++) {
+        for (var i = 0; i < windArray.length; i++) {
           windClass[i].innerHTML = "Wind Speed: " + windArray[i] + " mph";
         };
+
+        if (historyArray === null) {
+          historyArray = [cityInput]
+        } else if (historyArray.includes(cityInput)) {
+          return;
+        } else if (historyArray.length === 10) {
+          historyArray.pop();
+          historyArray.unshift(cityInput);
+        } else {
+          historyArray.unshift(cityInput);
+        };
+
+        localStorage.setItem("weatherHistory", JSON.stringify(historyArray));
+
+        setLocationHistory();
       })
     })
   }
 
   $("#searchBtn").on("click", function(event) {
     event.preventDefault();
-    getWeatherAPI();
+    displayWeather();
+    $("#city").val("");
+  })
+
+  $("#searchHistory").on("click", "li", function(event) {
+    $("#city").val(event.target.textContent);
+    displayWeather();
+    $("#city").val("");
   })
 });
