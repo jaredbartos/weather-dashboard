@@ -1,20 +1,59 @@
+:root {
+  --gray: #545E75;
+  --light-blue: #63ADF2;
+  --lighter-blue: #A7CCED;
+  --darker-blue: #304D6D;
+  --blue-gray: #82A0BC;
+}
+
+
 #currentDate {
   font-weight: normal;
   font-style: italic;
   margin-left: 10px;
 }
 
-h1{
+h2 {
   font-size: 150%;
   margin-bottom: 15px;
 }
 
-h2 {
+h3 {
   font-size: 125%;
 }
 
+li {
+  border-radius: 10px;
+}
+
+.fiveDay {
+  background-color: var(--lighter-blue);
+}
+
+#currentConditionsHeader {
+  background-color: var(--lighter-blue);
+}
+
+.navbar {
+  background-color: var(--lighter-blue);
+}
+
+.navbar-brand {
+  font-size: 200%;
+  color: var(--darker-blue);
+}
+
+#searchHistory li,
+.btn {
+  background-color: var(--darker-blue);
+  color: white;
+}
+
 @media (hover: hover) {
-  #searchHistory li:hover {
+  #searchHistory li:hover,
+  .btn:hover {
     cursor: pointer;
+    background-color: var(--lighter-blue);
+    color: black;
   }
 }

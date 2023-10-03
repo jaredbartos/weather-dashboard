@@ -10,9 +10,9 @@
 <body>
 
   <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg">
       <div class="container-fluid justify-content-center">
-        <a class="navbar-brand" href="#">Weather Dashboard</a>
+        <h1 class="navbar-brand p-3">Weather Dashboard</h1>
         </div>
       </div>
     </nav>
@@ -20,14 +20,14 @@
 
   <div class="container-fluid row mt-3">
     <aside class="col-lg-3 ms-3 min-vh-100 border-end pe-2">
-      <h1>Search for a US City:</h1>
+      <h2>Search for a US City:</h2>
       <p>Enter zip code or a city followed by state abbreviation</p>
       <form class="d-flex mb-5">
         <input class="form-control me-2" type="search" id="city" placeholder="e.g., Minneapolis, MN OR 55406" aria-label="Search">
-        <button class="btn btn-outline-primary" id="searchBtn" type="submit">Search</button>
+        <button class="btn border rounded" id="searchBtn" type="submit">Search</button>
       </form>
-      <h2>Location History</h2>
-      <ul class="list-group list-group-flush" id="searchHistory">
+      <h3>Location History</h3>
+      <ul class="list-group list-group-flush p-3" id="searchHistory">
       </ul>
     </aside>
   
@@ -35,7 +35,7 @@
     <section class="col-lg-8 min-vh-100" id="intro">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">Help yourself plan ahead!</h5>
+          <h2 class="card-title">Help yourself plan ahead!</h2>
           <p class="card-text">Enter a location into the search bar to see current conditions and a 5-day weather forecast!</p>
         </div>
       </div>
@@ -44,17 +44,18 @@
     <div class="col-lg-8" id="weatherData" style="display: none;">
       <section class="col-lg-12">
         <div class="card">
-          <h5 class="card-header">Current Conditions</h5>
+          <h2 class="card-header" id="currentConditionsHeader">Current Conditions</h2>
           <div class="card-body">
-            <h5 class="card-title mb-4" id="cityName"><span id="currentDate"></span> <span id="currentIcon"></span></h5>
+            <h2 class="card-title mb-4" id="cityName"><span id="currentDate"></span> <span id="currentIcon"></span></h2>
             <p class="card-text" id="currentTemp"></p>
             <p class="card-text" id="currentHumidity"></p>
             <p class="card-text" id="currentWind"></p>
           </div>
         </div>
         <div class="row mt-5">
-          <div class="card col-lg-2 m-2 p-1">
-            <h5 class="card-title date"></h5>
+          <h2 class="my-4">5-Day Forecast</h2>
+          <div class="card col-lg-2 m-3 p-1 fiveDay">
+            <h2 class="card-title date"></h2>
             <div class="card-body">
               <p class="icon"></p>
               <p class="card-text temp"></p>
@@ -62,8 +63,8 @@
               <p class="card-text wind"></p>
             </div>
           </div>
-          <div class="card col-lg-2 m-2 p-1">
-            <h5 class="card-title date"></h5>
+          <div class="card col-lg-2 m-3 p-1 fiveDay">
+            <h2 class="card-title date"></h2>
             <div class="card-body">
               <p class="icon"></p>
               <p class="card-text temp"></p>
@@ -71,8 +72,8 @@
               <p class="card-text wind"></p>
             </div>
           </div>
-          <div class="card col-lg-2 m-2 p-1">
-            <h5 class="card-title date"></h5>
+          <div class="card col-lg-2 m-3 p-1 fiveDay">
+            <h2 class="card-title date"></h2>
             <div class="card-body">
               <p class="icon"></p>
               <p class="card-text temp"></p>
@@ -80,8 +81,8 @@
               <p class="card-text wind"></p>
             </div>
           </div>
-          <div class="card col-lg-2 m-2 p-1">
-            <h5 class="card-title date"></h5>
+          <div class="card col-lg-2 m-3 p-1 fiveDay">
+            <h2 class="card-title date"></h2>
             <div class="card-body">
               <p class="icon"></p>
               <p class="card-text temp"></p>
@@ -89,8 +90,8 @@
               <p class="card-text wind"></p>
             </div>
           </div>
-          <div class="card col-lg-2 m-2 p-1">
-            <h5 class="card-title date"></h5>
+          <div class="card col-lg-2 m-3 p-1 fiveDay">
+            <h2 class="card-title date"></h2>
             <div class="card-body">
               <p class="icon"></p>
               <p class="card-text temp"></p>
@@ -105,7 +106,7 @@
     <section class="col-lg-8 min-vh-100" id="errorMessage" style="display: none;">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title" id="errorStatus"></h5>
+          <h2 class="card-title" id="errorStatus"></h2>
           <p class="card-text">Your search is either in the wrong format, or the location name, as entered, is not currently in the database. We apologize for any inconvenience.</p>
         </div>
       </div>

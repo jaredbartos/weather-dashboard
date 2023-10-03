@@ -11,7 +11,7 @@ $(document).ready(function(){
     }
     if (historyArray !== null) {
       for (var i = 0; i < historyArray.length; i++) {
-        var searchHistoryItem = $("<li class='list-group-item border-0 mt-3'>");
+        var searchHistoryItem = $("<li class='list-group-item border text-center rounded mt-3'>");
         searchHistoryItem.text(historyArray[i]);
         searchHistoryEl.append(searchHistoryItem);
       }
@@ -43,7 +43,6 @@ $(document).ready(function(){
         }        
       })
       .then(function (data) {
-        console.log(data);
         if (geoURL.includes("direct")) {
           var lat = data[0].lat;
           var lon = data[0].lon;
@@ -62,7 +61,6 @@ $(document).ready(function(){
           return response.json();
         })
         .then(function(data) {
-          console.log(data);
           var cityName = data.name;
           var weatherIcon = data.weather[0].icon;
           var temp = data.main.temp;
@@ -85,14 +83,12 @@ $(document).ready(function(){
         return response.json();
       })
       .then(function(data) {
-        console.log(data);
         var dateArray = [];
         var iconArray = [];
         var tempArray = [];
         var windArray = [];
         var humidityArray = [];
-        console.log(dayjs(dayjs.unix(data.list[0].dt)).hour())
-        console.log(data.list.length);
+
         for (var i = 0; i < data.list.length; i++) {
           if (dayjs(dayjs.unix(data.list[i].dt)).hour() === 12 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 13 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 14) {
             dateArray.push(dayjs(dayjs.unix(data.list[i].dt)).format("MM/DD/YYYY"));
@@ -102,34 +98,17 @@ $(document).ready(function(){
             humidityArray.push(data.list[i].main.humidity);
           }
         }
-        console.log(dateArray);
-        console.log(iconArray);
-        console.log(tempArray);
-        console.log(windArray);
-        console.log(humidityArray);
 
         var dateClass = document.querySelectorAll(".date");
+        var iconClass = document.querySelectorAll(".icon");
+        var tempClass = document.querySelectorAll(".temp");
+        var humidityClass = document.querySelectorAll(".humidity");
+        var windClass = document.querySelectorAll(".wind");
         for (var i = 0; i < dateArray.length; i++) {
           dateClass[i].textContent = dateArray[i];
-        };
-
-        var iconClass = document.querySelectorAll(".icon");
-        for (var i = 0; i < iconArray.length; i++) {
           iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
-        };
-
-        var tempClass = document.querySelectorAll(".temp");
-        for (var i = 0; i < tempArray.length; i++) {
           tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
-        };
-
-        var humidityClass = document.querySelectorAll(".humidity");
-        for (var i = 0; i < humidityArray.length; i++) {
           humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
-        };
-
-        var windClass = document.querySelectorAll(".wind");
-        for (var i = 0; i < windArray.length; i++) {
           windClass[i].innerHTML = "Wind Speed: " + windArray[i] + " mph";
         };
 
@@ -157,8 +136,8 @@ $(document).ready(function(){
     $("#city").val("");
   })
 
-  $("#searchHistory").on("click", "li", function(event) {
-    $("#city").val(event.target.textContent);
+  $("#searchHistory").on("click", "li", function() {
+    $("#city").val($(this).text());
     displayWeather();
     $("#city").val("");
   })
