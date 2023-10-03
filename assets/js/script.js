@@ -5,6 +5,7 @@ $(document).ready(function(){
   var stored = localStorage.getItem("weatherHistory");
   var historyArray = JSON.parse(stored);
 
+  // Get location history from local storage and display in list
   var setLocationHistory = function() {
     if (searchHistoryEl.children() !== null) {
       searchHistoryEl.children().remove();
@@ -20,9 +21,11 @@ $(document).ready(function(){
   
   setLocationHistory();
   
+  // Get coordinates of location from input and display weather
   var displayWeather = function() {
     var cityInput = $("#city").val();
 
+    // Separate zip code from city, state input and fetch coordinates
     if (cityInput.includes(",")) {
       var cityArray = cityInput.split(", ");
       var city = cityArray[0];
@@ -38,6 +41,7 @@ $(document).ready(function(){
           return response.json();
         } else {
           $("#errorStatus").html("<pre>Error: " + response.status + " - " + response.statusText + "!");
+          $("#weatherData").attr("style", "display: none;");
           $("#intro").attr("style", "display: none;");
           $("#errorMessage").attr("style", "display: block;");
         }        
@@ -53,6 +57,7 @@ $(document).ready(function(){
           return {lat, lon};
       })
     
+    // Use coordinates to fetch weather for location and populate Current Conditions section
     fetchCoordinates.then(function(coordinates) {
       var currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
 
@@ -75,6 +80,7 @@ $(document).ready(function(){
         })
     })
 
+    // Use coordinates to fetch weather for location and populate 5 Day Forecast section
     fetchCoordinates.then(function(coordinates) {
       var forecastWeatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
 
@@ -89,9 +95,10 @@ $(document).ready(function(){
         var windArray = [];
         var humidityArray = [];
 
+        // Check for forecast for hours between 12pm and 2pm and display forecast for those times for future five days
         for (var i = 0; i < data.list.length; i++) {
-          if (dayjs(dayjs.unix(data.list[i].dt)).hour() === 12 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 13 || dayjs(dayjs.unix(data.list[i].dt)).hour() === 14) {
-            dateArray.push(dayjs(dayjs.unix(data.list[i].dt)).format("MM/DD/YYYY"));
+          if (dayjs.unix(data.list[i].dt).hour() === 12 || dayjs.unix(data.list[i].dt).hour() === 13 || dayjs.unix(data.list[i].dt).hour() === 14) {
+            dateArray.push(dayjs.unix(data.list[i].dt).format("MM/DD/YYYY"));
             iconArray.push(data.list[i].weather[0].icon);
             tempArray.push(data.list[i].main.temp);
             windArray.push(data.list[i].wind.speed);
@@ -112,6 +119,7 @@ $(document).ready(function(){
           windClass[i].innerHTML = "Wind: " + windArray[i] + " mph";
         };
 
+        // Update location history
         if (historyArray === null) {
           historyArray = [cityInput]
         } else if (historyArray.includes(cityInput)) {
@@ -130,6 +138,7 @@ $(document).ready(function(){
     })
   }
 
+  // Set event listeners
   $("#searchBtn").on("click", function(event) {
     event.preventDefault();
     displayWeather();

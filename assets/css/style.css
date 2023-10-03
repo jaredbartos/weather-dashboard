@@ -1,11 +1,7 @@
 :root {
-  --gray: #545E75;
-  --light-blue: #63ADF2;
   --lighter-blue: #A7CCED;
   --darker-blue: #304D6D;
-  --blue-gray: #82A0BC;
 }
-
 
 #currentDate {
   font-weight: normal;
