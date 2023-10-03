@@ -71,7 +71,7 @@ $(document).ready(function(){
           $("#cityName").html(cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + weatherIcon + ".png alt='Weather Icon' />");
           $("#currentTemp").html("Temp: " + temp + " &deg;F");
           $("#currentHumidity").text("Humidity: " + humidity + " %");
-          $("#currentWind").text("Wind Speed: " + wind + " mph");
+          $("#currentWind").text("Wind: " + wind + " mph");
         })
     })
 
@@ -109,7 +109,7 @@ $(document).ready(function(){
           iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
           tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
           humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
-          windClass[i].innerHTML = "Wind Speed: " + windArray[i] + " mph";
+          windClass[i].innerHTML = "Wind: " + windArray[i] + " mph";
         };
 
         if (historyArray === null) {
