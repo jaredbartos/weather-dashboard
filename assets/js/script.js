@@ -38,6 +38,7 @@ $(document).ready(function(){
     var fetchCoordinates = fetch(geoURL)
       .then(function (response){
         if (response.status === 200) {
+          $("#errorMessage").attr("style", "display: none;")
           return response.json();
         } else {
           $("#errorStatus").html("<pre>Error: " + response.status + " - " + response.statusText + "!");
