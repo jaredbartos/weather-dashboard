@@ -70,8 +70,7 @@ $(document).ready(function(){
   }
   
   // Function for getting coordinates of location from input and display weather
-  var displayWeather = function() {
-    var cityInput = $("#city").val();
+  var displayWeather = function(cityInput) {
 
     // Separate zip code from city, state input and fetch coordinates
     if (cityInput.includes(",")) {
@@ -152,13 +151,12 @@ $(document).ready(function(){
   // Set event listeners
   $("#searchBtn").on("click", function(event) {
     event.preventDefault();
-    displayWeather();
+    displayWeather($("#city").val());
     $("#city").val("");
   })
 
   $("#searchHistory").on("click", "li", function() {
-    $("#city").val($(this).text());
-    displayWeather();
+    displayWeather($(this).text());
     $("#city").val("");
   })
 });
