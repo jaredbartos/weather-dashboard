@@ -20,8 +20,56 @@ $(document).ready(function(){
   }
   
   setLocationHistory();
+
+  // Function for inserting current weather values into HTML
+  var populateCurrentWeather = function(data) {
+    var cityName = data.name;
+    var weatherIcon = data.weather[0].icon;
+    var temp = data.main.temp;
+    var humidity = data.main.humidity;
+    var wind = data.wind.speed;
+    $("#intro").attr("style", "display: none;");
+    $("#weatherData").attr("style", "display: block;");
+    $("#cityName").html(cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + weatherIcon + ".png alt='Weather Icon' />");
+    $("#currentTemp").html("Temp: " + temp + " &deg;F");
+    $("#currentHumidity").text("Humidity: " + humidity + " %");
+    $("#currentWind").text("Wind: " + wind + " mph");
+  }
+
+  // Function for inserting forecast values into HTML
+  var populateForecast = function(data) {
+    var dateArray = [];
+    var iconArray = [];
+    var tempArray = [];
+    var windArray = [];
+    var humidityArray = [];
+
+    // Check for forecast for hours between 12pm and 2pm and display forecast for those times for future five days
+    for (var i = 0; i < data.list.length; i++) {
+      if (dayjs.unix(data.list[i].dt).hour() === 12 || dayjs.unix(data.list[i].dt).hour() === 13 || dayjs.unix(data.list[i].dt).hour() === 14) {
+        dateArray.push(dayjs.unix(data.list[i].dt).format("MM/DD/YYYY"));
+        iconArray.push(data.list[i].weather[0].icon);
+        tempArray.push(data.list[i].main.temp);
+        windArray.push(data.list[i].wind.speed);
+        humidityArray.push(data.list[i].main.humidity);
+      }
+    }
+
+    var dateClass = document.querySelectorAll(".date");
+    var iconClass = document.querySelectorAll(".icon");
+    var tempClass = document.querySelectorAll(".temp");
+    var humidityClass = document.querySelectorAll(".humidity");
+    var windClass = document.querySelectorAll(".wind");
+    for (var i = 0; i < dateArray.length; i++) {
+      dateClass[i].textContent = dateArray[i];
+      iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
+      tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
+      humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
+      windClass[i].innerHTML = "Wind: " + windArray[i] + " mph";
+    };
+  }
   
-  // Get coordinates of location from input and display weather
+  // Function for getting coordinates of location from input and display weather
   var displayWeather = function() {
     var cityInput = $("#city").val();
 
@@ -67,17 +115,7 @@ $(document).ready(function(){
           return response.json();
         })
         .then(function(data) {
-          var cityName = data.name;
-          var weatherIcon = data.weather[0].icon;
-          var temp = data.main.temp;
-          var humidity = data.main.humidity;
-          var wind = data.wind.speed;
-          $("#intro").attr("style", "display: none;");
-          $("#weatherData").attr("style", "display: block;");
-          $("#cityName").html(cityName + "<span id='currentDate'>" + dayjs().format("MM/DD/YYYY") + "<img src=https://openweathermap.org/img/wn/" + weatherIcon + ".png alt='Weather Icon' />");
-          $("#currentTemp").html("Temp: " + temp + " &deg;F");
-          $("#currentHumidity").text("Humidity: " + humidity + " %");
-          $("#currentWind").text("Wind: " + wind + " mph");
+          populateCurrentWeather(data);
         })
     })
 
@@ -90,35 +128,7 @@ $(document).ready(function(){
         return response.json();
       })
       .then(function(data) {
-        var dateArray = [];
-        var iconArray = [];
-        var tempArray = [];
-        var windArray = [];
-        var humidityArray = [];
-
-        // Check for forecast for hours between 12pm and 2pm and display forecast for those times for future five days
-        for (var i = 0; i < data.list.length; i++) {
-          if (dayjs.unix(data.list[i].dt).hour() === 12 || dayjs.unix(data.list[i].dt).hour() === 13 || dayjs.unix(data.list[i].dt).hour() === 14) {
-            dateArray.push(dayjs.unix(data.list[i].dt).format("MM/DD/YYYY"));
-            iconArray.push(data.list[i].weather[0].icon);
-            tempArray.push(data.list[i].main.temp);
-            windArray.push(data.list[i].wind.speed);
-            humidityArray.push(data.list[i].main.humidity);
-          }
-        }
-
-        var dateClass = document.querySelectorAll(".date");
-        var iconClass = document.querySelectorAll(".icon");
-        var tempClass = document.querySelectorAll(".temp");
-        var humidityClass = document.querySelectorAll(".humidity");
-        var windClass = document.querySelectorAll(".wind");
-        for (var i = 0; i < dateArray.length; i++) {
-          dateClass[i].textContent = dateArray[i];
-          iconClass[i].innerHTML = "<img src=https://openweathermap.org/img/wn/" + iconArray[i] + ".png alt='Weather Icon' />"
-          tempClass[i].innerHTML = "Temp: " + tempArray[i] + " &deg;F";
-          humidityClass[i].innerHTML = "Humidity: " + humidityArray[i] + " %";
-          windClass[i].innerHTML = "Wind: " + windArray[i] + " mph";
-        };
+        populateForecast(data);
 
         // Update location history
         if (historyArray === null) {
