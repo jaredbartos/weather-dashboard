@@ -21,6 +21,48 @@ $(document).ready(function(){
   
   setLocationHistory();
 
+  // Function for using coordinates that were fetched for current conditions
+  var useCoordinatesCurrent = function(lat, lon) {
+    var currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=" + APIKey;
+
+    var fetchCurrentWeather = fetch(currentWeatherURL)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        populateCurrentWeather(data);
+      })
+  };
+
+  // Function for using coordinates that were fetched for forecast
+  var useCoordinatesForecast = function(lat, lon, cityInput) {
+    var forecastWeatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=" + APIKey;
+
+      var fetchForecastWeather = fetch(forecastWeatherURL)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        populateForecast(data);
+
+        // Update location history
+        if (historyArray === null) {
+          historyArray = [cityInput]
+        } else if (historyArray.includes(cityInput)) {
+          return;
+        } else if (historyArray.length === 10) {
+          historyArray.pop();
+          historyArray.unshift(cityInput);
+        } else {
+          historyArray.unshift(cityInput);
+        };
+
+        localStorage.setItem("weatherHistory", JSON.stringify(historyArray));
+
+        setLocationHistory();
+      });
+  };
+
   // Function for inserting current weather values into HTML
   var populateCurrentWeather = function(data) {
     var cityName = data.name;
@@ -83,7 +125,7 @@ $(document).ready(function(){
       var geoURL = "https://api.openweathermap.org/geo/1.0/zip?zip=" + zip + "&limit=1&appid=" + APIKey;
     }
     var fetchCoordinates = fetch(geoURL)
-      .then(function (response){
+      .then(function(response) {
         if (response.status === 200) {
           $("#errorMessage").attr("style", "display: none;")
           return response.json();
@@ -94,58 +136,15 @@ $(document).ready(function(){
           $("#errorMessage").attr("style", "display: block;");
         }        
       })
-      .then(function (data) {
-        if (geoURL.includes("direct")) {
-          var lat = data[0].lat;
-          var lon = data[0].lon;
-          return {lat, lon};
-        } else
-          var lat = data.lat;
-          var lon = data.lon;
-          return {lat, lon};
-      })
-    
-    // Use coordinates to fetch weather for location and populate Current Conditions section
-    fetchCoordinates.then(function(coordinates) {
-      var currentWeatherURL = "https://api.openweathermap.org/data/2.5/weather?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
-
-      var fetchCurrentWeather = fetch(currentWeatherURL)
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          populateCurrentWeather(data);
-        })
-    })
-
-    // Use coordinates to fetch weather for location and populate 5 Day Forecast section
-    fetchCoordinates.then(function(coordinates) {
-      var forecastWeatherURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + coordinates.lat + "&lon=" + coordinates.lon + "&units=imperial&appid=" + APIKey;
-
-      var fetchForecastWeather = fetch(forecastWeatherURL)
-      .then(function(response) {
-        return response.json();
-      })
       .then(function(data) {
-        populateForecast(data);
-
-        // Update location history
-        if (historyArray === null) {
-          historyArray = [cityInput]
-        } else if (historyArray.includes(cityInput)) {
-          return;
-        } else if (historyArray.length === 10) {
-          historyArray.pop();
-          historyArray.unshift(cityInput);
+        if (geoURL.includes("direct")) {
+          useCoordinatesCurrent(data[0].lat, data[0].lon);
+          useCoordinatesForecast(data[0].lat, data[0].lon, cityInput);
         } else {
-          historyArray.unshift(cityInput);
-        };
-
-        localStorage.setItem("weatherHistory", JSON.stringify(historyArray));
-
-        setLocationHistory();
+          useCoordinatesCurrent(data.lat, data.lon);
+          useCoordinatesForecast(data.lat, data.lon, cityInput);
+        }
       })
-    })
   }
 
   // Set event listeners
