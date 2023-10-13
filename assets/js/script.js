@@ -120,9 +120,11 @@ $(document).ready(function(){
       var city = cityArray[0];
       var state = cityArray[1];
       var geoURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + city + "," + state + ",&limit=1&appid=" + APIKey;
-    } else if (Number(cityInput) != NaN) {
+    } else if (!isNaN(cityInput)) {
       var zip = cityInput;
       var geoURL = "https://api.openweathermap.org/geo/1.0/zip?zip=" + zip + "&limit=1&appid=" + APIKey;
+    } else {
+      var geoURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityInput + ",&limit=1&appid=" + APIKey;
     }
     var fetchCoordinates = fetch(geoURL)
       .then(function(response) {
